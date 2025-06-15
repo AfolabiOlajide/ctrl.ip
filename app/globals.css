@@ -123,6 +123,12 @@
     }
 }
 
+[data-rk] ._135hevf9i,
+[data-rk] ._135hevf9j:hover,
+[data-rk] ._135hevf9k:active {
+    background: var(--secondary) !important;
+}
+
 /* 
 Secondary color pallete:
 - B33791

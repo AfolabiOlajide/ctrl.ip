@@ -19,7 +19,7 @@ const queryClient = new QueryClient();
 
 export default function Web3Providers({ children }: PropsWithChildren) {
     return (
-        <WagmiProvider config={config}>
+        <WagmiProvider config={config as any}>
             <QueryClientProvider client={queryClient}>
                 <TomoEVMKitProvider>{children}</TomoEVMKitProvider>
             </QueryClientProvider>

@@ -8,19 +8,28 @@ import Link from "next/link";
 
 const Nav = () => {
     return (
-        <nav className="px-6 border-b border-secondary/30 sticky top-0 bg-background backdrop-blur">
+        <nav className="px-6 border-b border-secondary/30 sticky top-0 bg-background/20 backdrop-blur-[2rem]">
             <div className="nav-container p-4 flex justify-between ">
-                <div className="logo">
-                    <span className="font-bold text-2xl uppercase">
-                        {SITE_NAME}
-                    </span>
-                </div>
-                <div className="nav-links flex items-center">
+                <Link href="/">
+                    <div className="logo">
+                        <span className="font-bold text-2xl uppercase text-secondary">
+                            {SITE_NAME}
+                        </span>
+                    </div>
+                </Link>
+                <div className="nav-links flex items-center gap-4">
+                    <Link
+                        href={"/search-ip"}
+                        className="font-bold hover:text-secondary"
+                    >
+                        Search
+                    </Link>
+
                     <Link
                         href={"/register-ip"}
                         className="font-bold hover:text-secondary"
                     >
-                        Register IP
+                        Register
                     </Link>
                 </div>
                 <div className="connect-btn flex items-center gap-4">

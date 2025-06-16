@@ -17,6 +17,10 @@ import {
 import axios from "axios";
 import FormData from "form-data";
 import { createHash } from "crypto";
+import { PinataSDK } from "pinata";
+import { config } from "dotenv";
+
+config();
 
 // Docs: https://docs.story.foundation/developers/deployed-smart-contracts
 export const RoyaltyPolicyLAP: Address =
@@ -25,6 +29,11 @@ export const RoyaltyPolicyLRP: Address =
     "0x9156e603C949481883B1d3355c6f1132D191fC41";
 const SPGNFTContractAddress: Address =
     "0xc32A8a0FF3beDDDa58393d022aF433e78739FAbc";
+
+export const pinata = new PinataSDK({
+    pinataJwt: `${process.env.NEXT_PUBLIC_PINATA_JWT}`,
+    pinataGateway: `${process.env.NEXT_PUBLIC_GATEWAY_URL}`,
+});
 
 /**
  * Get a configured public client based on the current network
@@ -117,6 +126,7 @@ export const registerIPAsset = async function (
         txHash: response.txHash,
         ipId: response.ipId,
         licenseTermsIds: response.licenseTermsIds,
+        linkToExplorer: `https://aeneid.explorer.story.foundation/ipa/${response.ipId}`,
     };
 };
 
@@ -173,7 +183,7 @@ export async function uploadJSONToIPFS(jsonMetadata: any): Promise<string> {
     const options = {
         method: "POST",
         headers: {
-            Authorization: `Bearer ${process.env.PINATA_JWT}`,
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_PINATA_JWT}`,
             "Content-Type": "application/json",
         },
         data: {
@@ -188,6 +198,61 @@ export async function uploadJSONToIPFS(jsonMetadata: any): Promise<string> {
         return response.data.IpfsHash;
     } catch (error) {
         console.error("Error uploading JSON to IPFS:", error);
+        throw error;
+    }
+}
+
+// This is a helper function to upload a file to IPFS
+// export async function uploadFIleToIPFS(file: File): Promise<string> {
+//     const form = new FormData();
+//     form.append("file", file);
+//     form.append("name", JSON.stringify(file.name));
+//     form.append("group_id", "0b5ba310-f05c-441a-b86c-4ebbd609d9bf");
+//     form.append("network", "public");
+
+//     const url = "https://uploads.pinata.cloud/v3/files";
+//     const options = {
+//         method: "POST",
+//         headers: {
+//             Authorization: `Bearer ${process.env.NEXT_PUBLIC_PINATA_JWT}`,
+//             "Content-Type": "multipart/form-data",
+//         },
+//         data: form,
+//     };
+
+//     try {
+//         const response = await axios(url, options);
+//         // console.log("Upload file response: ", response);
+//         return `https://ipfs.io/ipfs/${response.data.data.cid}`;
+//     } catch (error) {
+//         console.error("Error uploading file to IPFS:", error);
+//         throw error;
+//     }
+// }
+// This is a helper function to upload a file to IPFS
+
+export async function uploadFIleToIPFS(file: File): Promise<string> {
+    const form = new FormData();
+    form.append("file", file);
+    form.append("pinataMetadata", JSON.stringify({ name: file.name }));
+    form.append("pinataOptions", JSON.stringify({ cidVersion: 1 }));
+
+    const url = "https://api.pinata.cloud/pinning/pinFileToIPFS";
+    const options = {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_PINATA_JWT}`,
+            "Content-Type": "multipart/form-data",
+        },
+        data: form,
+    };
+
+    try {
+        const response = await axios(url, options);
+        // console.log("Upload file response: ", response);
+        return `https://ipfs.io/ipfs/${response.data.IpfsHash}`;
+    } catch (error) {
+        console.error("Error uploading file to IPFS:", error);
         throw error;
     }
 }

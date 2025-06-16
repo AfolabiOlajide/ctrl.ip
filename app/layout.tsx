@@ -7,6 +7,8 @@ import Web3Providers from "@/components/web3-provider";
 import Nav from "@/components/nav";
 import { NetworkProvider } from "@/lib/context/network-context";
 import AppProvider from "@/lib/context/app-context";
+import Footer from "@/components/footer";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -45,8 +47,10 @@ export default function RootLayout({
                         <Web3Providers>
                             <NetworkProvider>
                                 <AppProvider>
+                                    <Toaster richColors />
                                     <Nav />
                                     {children}
+                                    <Footer />
                                 </AppProvider>
                             </NetworkProvider>
                         </Web3Providers>

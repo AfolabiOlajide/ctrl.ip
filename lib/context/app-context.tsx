@@ -67,12 +67,12 @@ export default function AppProvider({ children }: PropsWithChildren) {
         );
 
         try {
-            const config: StoryConfig = {
+            const config = {
                 wallet: wallet,
                 transport: custom(wallet.transport),
                 chainId: chainId,
             };
-            const client = StoryClient.newClient(config);
+            const client = StoryClient.newClient(config as StoryConfig);
             return client;
         } catch (error) {
             console.error("Error creating Story client:", error);
